@@ -67,7 +67,7 @@ for i in {1..5}; do nxc smb 192.168.56.105 -u labuser -p "WrongPass${i}x"; sleep
 
 NetExec returned `STATUS_LOGON_FAILURE` for each authentication attempt, confirming that the supplied credentials were rejected.
 
-![NetExec password guessing](screenshots/01-netexec-password-guessing.png)
+![NetExec password guessing](01-netexec-password-guessing.png)
 
 ## Detection
 
@@ -86,7 +86,7 @@ The alerts showed:
 
 These alerts confirmed that NTLM authentication traffic was taking place over SMB. The alerts by themselves did not prove that authentication failed, so Windows Security telemetry was required for confirmation.
 
-![Security Onion NTLM alerts](screenshots/02-security-onion-ntlm-alerts.png)
+![Security Onion NTLM alerts](02-security-onion-ntlm-alerts.png)
 
 ### Windows Event 4625 Detection
 
@@ -102,7 +102,7 @@ The query returned `10` Windows Event ID `4625` records during the activity peri
 
 Event ID `4625` represents a failed Windows logon. At this stage, the raw count appeared to suggest ten failed authentication attempts. However, the controlled activity had only generated five password guesses, so the event count required further investigation rather than being accepted at face value.
 
-![Security Onion 4625 failed logons](screenshots/03-security-onion-4625-failed-logons.png)
+![Security Onion 4625 failed logons](03-security-onion-4625-failed-logons.png)
 
 ## Investigation
 
@@ -127,7 +127,7 @@ Logon Type `3` indicates a network logon, which is consistent with authenticatio
 
 The source address also directly correlated the Windows authentication failure with the Kali Linux host used to generate the controlled activity.
 
-![Detailed Windows 4625 event in Security Onion](screenshots/04-windows-4625-event-details.png)
+![Detailed Windows 4625 event in Security Onion](04-windows-4625-event-details.png)
 
 ### Authentication Failure Pattern
 
@@ -158,7 +158,7 @@ The failures occurred at approximately:
 
 The repeated failures occurred in a regular pattern over roughly 29 seconds and all originated from the same source host against the same account. This is consistent with automated password guessing rather than an isolated authentication mistake.
 
-![Repeated labuser failed logons](screenshots/06-repeated-labuser-failed-logons.png)
+![Repeated labuser failed logons](06-repeated-labuser-failed-logons.png)
 
 ### Why 10 Event 4625 Records Did Not Mean 10 Password Guesses
 
@@ -208,7 +208,7 @@ The query returned `0` events during the investigated attack window.
 
 This means no successful Event ID `4624` logon for `labuser` was identified in the Security Onion telemetry during the period being investigated.
 
-![No successful labuser logon in Security Onion](screenshots/05-no-successful-labuser-logon.png)
+![No successful labuser logon in Security Onion](05-no-successful-labuser-logon.png)
 
 ### Windows Endpoint Corroboration
 
@@ -223,7 +223,7 @@ A matching Event ID `4625` showed:
 - status: `0xC000006D`
 - substatus: `0xC000006A`
 
-![Windows 4625 failure details](screenshots/07-windows-4625-failure-details.png)
+![Windows 4625 failure details](07-windows-4625-failure-details.png)
 
 The same event also showed:
 
@@ -232,7 +232,7 @@ The same event also showed:
 - logon process: `NtLmSsp`
 - authentication package: `NTLM`
 
-![Windows 4625 network authentication details](screenshots/08-windows-4625-network-auth-details.png)
+![Windows 4625 network authentication details](08-windows-4625-network-auth-details.png)
 
 This independently corroborated the Security Onion findings and confirmed that the target endpoint itself recorded the same network authentication failure from the Kali source.
 
@@ -244,7 +244,7 @@ No matching event containing `labuser` was found in the filtered successful-logo
 
 This endpoint-side result matched the Security Onion query and provided a second source of evidence that no successful `labuser` authentication was identified during the investigated time window.
 
-![Windows no successful labuser logon](screenshots/09-windows-no-successful-labuser-logon.png)
+![Windows no successful labuser logon](09-windows-no-successful-labuser-logon.png)
 
 ## Incident Timeline
 
