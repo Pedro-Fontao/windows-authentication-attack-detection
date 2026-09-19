@@ -75,11 +75,12 @@ NetExec returned `STATUS_LOGON_FAILURE` for each authentication attempt, confirm
 
 Security Onion generated three Suricata alerts associated with the SMB/NTLM authentication exchange between the two lab hosts.
 
-The alerts showed:
+The client-to-server alerts showed `192.168.56.10` communicating with `192.168.56.105` over TCP port `445`.
 
-- source: `192.168.56.10`
-- destination: `192.168.56.105`
-- destination port: `445/TCP`
+Security Onion also observed the NTLM challenge response in the reverse direction from the Windows endpoint back to the source host.
+
+The alerts included:
+
 - `ET INFO NTLM Session Setup Request - Negotiate`
 - `ET INFO NTLM Session Setup Request - Auth`
 - `ET INFO NTLMv1 Session Setup Response - Challenge`
