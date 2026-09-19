@@ -332,4 +332,8 @@ Detection logic should distinguish genuine credential failures from related auth
 
 ## What I Learned
 
-<!-- Write this section in your own words. -->
+- I learned how to match network telemetry with endpoint telemetry providing more of a complete picture of the security events by connecting the internal host activity with data in motion across the network. Endpoint telemetry is very useful because it can provide granular visibility into system behavior when needed.
+- I learned the difference between a failed authentication from a successful one using Windows Security events. Event ID 4625 showed failed logons, while Event ID 4624 was used to check whether any logons were successful
+- I learned that Logon Type 3 represents a network logon, also learned some other common Logon Types such as 2,4,5,7 and 10. Which represent respectively, Interactive, Batch, Service, Unlock and Remote Interactive.
+- I learned that the raw number of Windows Event ID 4625 logs does not necessarily equal the number of password attempts. There were 10 failed logon events recorded, but only 5 were genuine bad-password attempts against labuser, the other 5 were NTLM processing errors.
+- I learned why a SOC analyst should not overstate conclusions. The evidence showed repeated password guessing with no observed successful labuser logon during the selected time window, this does not prove the endpoint was not compromised. Successful logon could have been achieved through another method.
